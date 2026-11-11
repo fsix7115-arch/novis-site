@@ -52,18 +52,39 @@ changes, change this site in the same commit round.
 - `js/supabase.js` — client + profile/ban helpers (ban check sends
   SHA-256 hashes only and fails open, like the app).
 - `js/history-store.js` — the recent-chats store.
+- `js/ripple.js` — one delegated listener: every button press gets a
+  ripple that starts at the tap point and is clipped to the button's
+  own border-radius (all controls carry `overflow: hidden`), so the
+  animation never spills outside the button or shifts layout.
+- `js/testing.js` — the hidden Testing door, mirroring the app's
+  AboutSheet unlock exactly: a small muted ⓘ top-right of the entry
+  gate opens the About sheet; triple-tapping the line "All features
+  in this build have been tested and verified." (each tap within
+  800ms) opens the password prompt. The password is checked as a
+  SHA-256 hex compare against the hash stored in the app (hash only,
+  never the password). 5 wrong attempts lock this device for 12h.
+  Testing premium ON turns all ads off (`shouldShowAds()` /
+  `applyAdsGate()` is the switch Phase 2 ads check); the premium
+  panel (About sheet, only while premium is on) offers Turn off
+  premium, Clear recent chats, and Fresh test start (signs out and
+  wipes this device's website data). No visible Testing link exists
+  anywhere — the door is hidden by design.
 - `css/theme.css` — the app's warm golden-hour palette (`AppColors`)
   as CSS variables; ambient page background is two sunset glows
   drifting slowly (disabled under `prefers-reduced-motion`).
+  Premium web fonts: **Fraunces** (display serif — headings, brand
+  word) and **Manrope** (body + buttons), loaded from Google Fonts
+  with serif / system fallbacks if offline.
 
 ## Phase 2 will extend this with
 
 Group calls (room-open joins, mesh, pins/speaker order), the AI Friend
 chat page (Darling / Honey via the existing `ai-dost` edge function),
-Friends + full Profile/Settings, Ads Time premium unlocks, the hidden
-Testing panel, and AdSense on the site once approved. Each lands as
-its own page + script beside the Phase 1 files, reusing the same
-protocol layer in `js/call.js`.
+Friends + full Profile/Settings, Ads Time premium unlocks, and AdSense
+on the site once approved (the hidden Testing door + premium ad gate
+are already live — see `js/testing.js`). Each lands as its own page +
+script beside the Phase 1 files, reusing the same protocol layer in
+`js/call.js`.
 
 ## House rules
 

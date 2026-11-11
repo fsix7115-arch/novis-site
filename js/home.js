@@ -2,8 +2,10 @@
 // owns the ban / age / name routing.
 import { supabase, LS, currentUser, myProfile, toast } from './supabase.js';
 import { loadHistory, minutesLeft } from './history-store.js';
+import { applyAdsGate } from './testing.js';
 
 async function boot() {
+  applyAdsGate(); // Testing premium hides every ad, site-wide
   const user = await currentUser();
   if (!user) return location.replace('index.html');
   if (localStorage.getItem(LS.age) !== '1') return location.replace('index.html');

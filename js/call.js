@@ -15,6 +15,7 @@ import {
   supabase, LS, currentUser, myProfile, fetchPublicProfile, toast,
 } from './supabase.js';
 import { saveHistory } from './history-store.js';
+import { applyAdsGate } from './testing.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -986,6 +987,7 @@ async function initLocalMedia() {
 }
 
 async function boot() {
+  applyAdsGate(); // Testing premium hides every ad, site-wide
   const user = await currentUser();
   if (!user) return location.replace('index.html');
   if (localStorage.getItem(LS.age) !== '1') return location.replace('index.html');

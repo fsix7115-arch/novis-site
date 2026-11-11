@@ -4,6 +4,7 @@
 import {
   supabase, LS, currentUser, myProfile, upsertProfile, checkBanned, toast,
 } from './supabase.js';
+import { initTesting } from './testing.js';
 
 const views = ['splash', 'gate', 'login', 'signup', 'age', 'name', 'banned', 'exit'];
 function show(name) {
@@ -128,4 +129,5 @@ document.getElementById('form-name').addEventListener('submit', async (e) => {
   location.href = 'home.html';
 });
 
+initTesting(); // hidden Testing door lives in the About sheet (ⓘ)
 boot();

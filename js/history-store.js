@@ -56,6 +56,11 @@ export function removeHistory(id) {
   writeAll(readAll().filter((e) => e.id !== id));
 }
 
+/// Wipes every stored session entry (Testing panel's clear-history).
+export function clearHistory() {
+  writeAll([]);
+}
+
 export function minutesLeft(entry) {
   const ms = Date.parse(entry.ended_at) + RETENTION_MS - Date.now();
   return Math.max(0, Math.ceil(ms / 60000));

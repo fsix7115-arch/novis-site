@@ -28,16 +28,24 @@
   --brand-gradient: linear-gradient(135deg, var(--sunset-orange), var(--sunset-rose) 52%, var(--sunset-violet));
   --launch-gradient: linear-gradient(135deg, var(--bg-top), var(--bg) 55%, var(--bg-deep));
   --radius: 18px;
+  /* Premium web fonts (Google Fonts, fallbacks if offline):
+     Fraunces — warm display serif for headings + the brand word;
+     Manrope — clean readable sans for body + buttons. */
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Manrope", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg-deep);
   color: var(--text);
   min-height: 100dvh;
 }
+h1, h2, h3 { font-family: var(--font-display); }
+.brand-word { font-family: var(--font-display); }
+.topbar strong { font-family: var(--font-display); }
 a { color: var(--glow-amber); }
 
 /* Warm flowing world behind everything: two soft sunset glows slowly
@@ -68,6 +76,21 @@ a { color: var(--glow-amber); }
 .logo { display: block; }
 .logo-round { border-radius: 22%; box-shadow: 0 8px 30px rgba(242, 107, 29, 0.35); }
 
+/* Every pressable control clips its press ripple to its own shape:
+   position + overflow keep the ripple inside the button, so the
+   animation can never spill outside or shift layout. */
+.btn, .tool-btn, .tile, .icon-btn, .hist-item, button.badge {
+  position: relative; overflow: hidden;
+}
+/* The ripple itself — a soft light circle that starts at the tap
+   point, grows inside the button, and fades (js/ripple.js). */
+.ripple {
+  position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.38) 0%, rgba(255, 255, 255, 0.12) 45%, transparent 70%);
+  transform: scale(0); animation: ripple-in 0.55s ease-out forwards;
+}
+@keyframes ripple-in { to { transform: scale(1); opacity: 0; } }
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   border: 1px solid var(--glass-border); background: var(--glass-fill); color: var(--text);
@@ -90,6 +113,8 @@ a { color: var(--glow-amber); }
   transform: skewX(-20deg); transition: left 0.45s ease;
 }
 .btn.primary:active::after { left: 120%; }
+.tile, .icon-btn { transition: transform 0.12s ease; }
+.tile:active, .icon-btn:active { transform: scale(0.97); }
 .btn.ghost { background: transparent; }
 .btn.danger { background: linear-gradient(135deg, #ff5252, var(--danger)); border: none; color: #fff; }
 .btn:disabled { opacity: 0.45; cursor: default; transform: none; }
@@ -119,7 +144,35 @@ a { color: var(--glow-amber); }
 }
 .note { color: var(--text-2); font-size: 14px; }
 .muted { color: var(--text-muted); }
-.center-col { max-width: 520px; margin: 0 auto; padding: 32px 20px 48px; text-align: center; }
+.center-col { max-width: 520px; margin: 0 auto; padding: 32px 20px 48px; text-align: center; position: relative; }
+
+/* About sheet (hidden Testing door lives here) — small muted ⓘ on
+   the entry gate, same place as the app. The sheet is a bottom sheet
+   on phones, centred on desktop. */
+.about-info {
+  position: absolute; top: 0; right: 0; width: 36px; height: 36px;
+  border-radius: 50%; border: 1px solid var(--glass-border);
+  background: var(--glass-fill); color: var(--text-muted);
+  font-size: 17px; line-height: 1; cursor: pointer; padding: 0;
+}
+.about-info:hover { color: var(--text); }
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 150; display: flex;
+  align-items: flex-end; justify-content: center;
+  background: rgba(15, 6, 11, 0.72);
+}
+@media (min-width: 640px) { .modal-overlay { align-items: center; } }
+.modal-sheet {
+  background: linear-gradient(180deg, var(--surface-hi), var(--surface));
+  border: 1px solid var(--border); border-radius: 20px 20px 0 0;
+  width: min(520px, 100%); max-height: 88dvh; overflow-y: auto;
+  padding: 24px; text-align: left;
+}
+@media (min-width: 640px) { .modal-sheet { border-radius: 20px; } }
+.about-line { color: var(--text-2); margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
+/* Styled exactly like its neighbours — the triple-tap door it
+   carries is invisible by design. */
+#about-tested-line { cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
 .hidden { display: none !important; }
 
 .toast {
