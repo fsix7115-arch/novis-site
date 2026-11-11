@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
 </head>
 <body>
 <div class="ambient"></div>
@@ -21,7 +22,11 @@
     <strong>Novis</strong>
     <span class="status-dot" id="statusDot"></span>
     <span id="statusText" style="font-size:14px;">Getting ready…</span>
+    <span class="open-pill hidden" id="openPill">Open</span>
     <span style="flex:1;"></span>
+    <label class="speaker-toggle hidden" id="speakerToggleWrap" title="In group calls, show whoever is speaking above pinned participants">
+      <input type="checkbox" id="speakerToggle"> Speaker on top
+    </label>
     <span id="duration" class="muted" style="font-size:14px;"></span>
   </header>
 
@@ -36,21 +41,28 @@
               <div id="remoteStateTitle" style="font-size:19px; font-weight:700;">Getting ready</div>
               <div id="remoteStateText" class="note">Your camera is on — the call starts in a moment.</div>
               <div id="prepareCount" style="font-size:40px; font-weight:800; color:var(--glow-amber);"></div>
+              <div id="groupOffers" class="group-offers"></div>
             </div>
             <span class="badge hand-badge hidden" id="peerHandBadge">✋ Hand raised</span>
             <button class="badge mute-badge hidden" id="peerMuteBadge" title="Ask them to unmute">🔇 Muted — tap to ask</button>
             <span class="name-chip"><span id="peerName">Stranger</span></span>
           </div>
         </div>
-        <div class="frame-slot">
+        <div class="frame-slot" id="selfSlot">
           <div class="frame" id="selfFrame">
             <video id="localVideo" class="self" autoplay playsinline muted></video>
             <span class="badge hand-badge hidden" id="selfHandBadge">✋ Hand raised</span>
             <span class="badge mute-badge hidden" id="selfMuteBadge">🔇 Muted</span>
+            <button class="pop-chip hidden" id="btnSelfPop" title="Pop your frame out">Pop-up</button>
+            <button class="pop-expand hidden" id="btnSelfExpand" title="Back into the stack">⤢</button>
             <span class="name-chip">You · <span id="selfName"></span></span>
           </div>
         </div>
       </div>
+
+      <div class="group-stack hidden" id="groupStack"></div>
+      <div class="group-self-slot hidden" id="groupSelfSlot"></div>
+      <div class="group-notice hidden" id="groupNotice"></div>
 
       <div class="stage-banner hidden" id="pauseBanner">
         <span><strong>You're paused</strong> — take your time.</span>
@@ -89,6 +101,10 @@
           <span style="font-size:21px; line-height:22px;">✋</span>
           <span>Hand</span>
         </button>
+        <button class="tool-btn" id="btnAdd" title="Open this call so people nearby can join">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.4"/><path d="M4.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M18.5 5.5v5M16 8h5"/></svg>
+          <span>Add</span>
+        </button>
         <button class="tool-btn" id="btnPause" title="Pause — stay here, talk to nobody">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5v14M15 5v14"/></svg>
           <span>Pause</span>
@@ -123,6 +139,12 @@
     <button class="icon-btn hidden" id="btnChatShow">💬 Chat</button>
   </div>
 </div>
+
+<div class="sheet-overlay hidden" id="sheetOverlay">
+  <div class="sheet" id="sheetCard" role="dialog" aria-modal="true"></div>
+</div>
+
+<div class="popup-layer" id="popupLayer"></div>
 
 <script src="js/config.js"></script>
 <script src="js/ripple.js"></script>
