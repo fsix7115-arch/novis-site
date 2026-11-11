@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Recent chats</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="ambient"></div>
+<main class="home-wrap" style="max-width:720px;">
+  <div class="topbar">
+    <a href="home.html" class="icon-btn" style="text-decoration:none;">← Home</a>
+    <strong style="font-size:19px;">Recent chats</strong>
+    <span class="spacer"></span>
+    <span class="chip">View-only · auto-deleted after 30 minutes</span>
+  </div>
+
+  <div id="hist-list"></div>
+  <p class="note hidden" id="hist-empty">No recent chats. When a call ends, its chat stays here for 30 minutes.</p>
+
+  <section id="thread" class="card thread-view hidden">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <button class="icon-btn" id="thread-back">← All chats</button>
+      <strong id="thread-title">Chat</strong>
+      <span class="spacer" style="flex:1;"></span>
+      <span class="muted" id="thread-meta" style="font-size:13px;"></span>
+    </div>
+    <div class="chat-log" id="thread-log" style="max-height:60vh; padding:0;"></div>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script type="module" src="js/history.js"></script>
+</body>
+</html>

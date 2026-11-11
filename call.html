@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Video call</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="ambient"></div>
+
+<div class="call-root">
+  <header class="call-head">
+    <img class="logo logo-round" src="assets/logo.png" alt="Novis logo" width="30" height="30">
+    <strong>Novis</strong>
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText" style="font-size:14px;">Getting ready…</span>
+    <span style="flex:1;"></span>
+    <span id="duration" class="muted" style="font-size:14px;"></span>
+  </header>
+
+  <div class="call-layout" id="callLayout">
+    <div class="stage">
+      <div class="frames">
+        <div class="frame-slot">
+          <div class="frame" id="remoteFrame">
+            <video id="remoteVideo" autoplay playsinline></video>
+            <div class="placeholder" id="remotePlaceholder">
+              <img class="logo logo-round" src="assets/logo.png" alt="" width="72" height="72">
+              <div id="remoteStateTitle" style="font-size:19px; font-weight:700;">Getting ready</div>
+              <div id="remoteStateText" class="note">Your camera is on — the call starts in a moment.</div>
+              <div id="prepareCount" style="font-size:40px; font-weight:800; color:var(--glow-amber);"></div>
+            </div>
+            <span class="badge hand-badge hidden" id="peerHandBadge">✋ Hand raised</span>
+            <button class="badge mute-badge hidden" id="peerMuteBadge" title="Ask them to unmute">🔇 Muted — tap to ask</button>
+            <span class="name-chip"><span id="peerName">Stranger</span></span>
+          </div>
+        </div>
+        <div class="frame-slot">
+          <div class="frame" id="selfFrame">
+            <video id="localVideo" class="self" autoplay playsinline muted></video>
+            <span class="badge hand-badge hidden" id="selfHandBadge">✋ Hand raised</span>
+            <span class="badge mute-badge hidden" id="selfMuteBadge">🔇 Muted</span>
+            <span class="name-chip">You · <span id="selfName"></span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-banner hidden" id="pauseBanner">
+        <span><strong>You're paused</strong> — take your time.</span>
+        <button class="btn primary" id="btnResume">Resume</button>
+        <button class="btn danger" id="btnEndFromPause">End</button>
+      </div>
+      <div class="stage-banner hidden" id="unmuteBanner">
+        <span>The stranger asked you to unmute.</span>
+        <button class="btn primary" id="btnUnmuteNow">Unmute</button>
+        <button class="btn" id="btnUnmuteDismiss">Dismiss</button>
+      </div>
+      <div class="stage-banner hidden" id="soundBanner">
+        <span>Your browser blocked the call sound.</span>
+        <button class="btn primary" id="btnSound">Tap for sound</button>
+      </div>
+      <div class="stage-banner hidden" id="failBanner">
+        <span id="failText">Something went wrong.</span>
+        <button class="btn primary" id="btnRetry">Search again</button>
+        <button class="btn danger" id="btnEndFromFail">End</button>
+      </div>
+
+      <div class="toolbar" id="toolbar">
+        <button class="tool-btn" id="btnMic" title="Mute / unmute">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="3" width="6" height="10" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+          <span id="micLabel">Mic</span>
+        </button>
+        <button class="tool-btn" id="btnFlip" title="Flip camera">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>
+          <span>Flip</span>
+        </button>
+        <button class="tool-btn active" id="btnSpeaker" title="Speaker on / off">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3.5L12 18V6l-4.5 4H4z"/><path d="M15.5 9.5a4 4 0 0 1 0 5"/></svg>
+          <span>Speaker</span>
+        </button>
+        <button class="tool-btn" id="btnHand" title="Raise your hand">
+          <span style="font-size:21px; line-height:22px;">✋</span>
+          <span>Hand</span>
+        </button>
+        <button class="tool-btn" id="btnPause" title="Pause — stay here, talk to nobody">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 5v14M15 5v14"/></svg>
+          <span>Pause</span>
+        </button>
+        <button class="tool-btn" id="btnNext" title="Next stranger">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6.8v10.4c0 .9 1 1.5 1.8 1L16 13a1.2 1.2 0 0 0 0-2L7.8 5.9C7 5.4 6 6 6 6.8z"/><rect x="16.5" y="6" width="2.4" height="12" rx="1"/></svg>
+          <span>Next</span>
+        </button>
+        <button class="tool-btn end" id="btnEnd" title="End the call session">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l1.7 4.5L8.2 10a13 13 0 0 0 5.8 5.8l1.5-2.5L20 15v4a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></svg>
+          <span>End</span>
+        </button>
+      </div>
+    </div>
+
+    <aside class="chat-panel" id="chatPanel">
+      <div class="chat-head" id="chatHead">
+        <strong>Chat</strong>
+        <span class="spacer"></span>
+        <button class="icon-btn" id="btnChatFloat">Float</button>
+        <button class="icon-btn hidden" id="btnChatDock">Dock</button>
+        <button class="icon-btn phone-only" id="btnChatHide">Hide</button>
+      </div>
+      <div class="chat-log" id="chatLog"></div>
+      <div class="typing" id="typingLine"></div>
+      <form class="chat-input" id="chatForm">
+        <input id="chatInput" maxlength="1000" placeholder="Type a message…" autocomplete="off">
+        <button class="btn primary small" type="submit">Send</button>
+      </form>
+      <div class="resize-grip hidden" id="resizeGrip"></div>
+    </aside>
+    <button class="icon-btn hidden" id="btnChatShow">💬 Chat</button>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script type="module" src="js/call.js"></script>
+</body>
+</html>

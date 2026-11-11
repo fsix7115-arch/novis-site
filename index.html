@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Meet someone new</title>
+<meta name="description" content="Novis connects you with strangers for live video conversations. Free, warm and human.">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="ambient"></div>
+
+<!-- Branded splash while the session resolves (logo world, no spinner) -->
+<div id="view-splash" class="splash">
+  <img class="logo logo-round" src="assets/logo.png" alt="Novis logo" width="96" height="96">
+  <div class="note">Opening Novis…</div>
+</div>
+
+<main id="view-gate" class="center-col hidden">
+  <img class="logo logo-round" src="assets/logo.png" alt="Novis logo" width="110" height="110" style="margin: 12px auto 18px;">
+  <h1 style="margin:0 0 8px;">Welcome to Novis</h1>
+  <p class="note" style="margin:0 0 28px;">Meet someone new — live video conversations with strangers, in a warm and respectful place.</p>
+  <div style="display:grid; gap:12px;">
+    <button class="btn primary" id="btn-login">Log in</button>
+    <button class="btn" id="btn-signup">Sign up</button>
+    <button class="btn ghost" id="btn-guest">Continue as Guest</button>
+  </div>
+  <p class="muted" style="font-size:13px; margin-top:22px;">18+ only · Be respectful · Report / Block anytime</p>
+</main>
+
+<main id="view-login" class="center-col hidden">
+  <h1 style="margin:0 0 6px;">Log in</h1>
+  <p class="note" style="margin:0 0 22px;">Welcome back to Novis.</p>
+  <div id="login-error" class="error hidden"></div>
+  <form id="form-login">
+    <div class="field"><label for="login-email">Email</label><input id="login-email" type="email" required autocomplete="email"></div>
+    <div class="field"><label for="login-password">Password</label><input id="login-password" type="password" required autocomplete="current-password"></div>
+    <button class="btn primary" type="submit">Log in</button>
+  </form>
+  <p style="margin-top:18px;"><a href="#" id="login-back">← Back</a></p>
+</main>
+
+<main id="view-signup" class="center-col hidden">
+  <h1 style="margin:0 0 6px;">Create your account</h1>
+  <p class="note" style="margin:0 0 22px;">Your name is what strangers will see — never your email.</p>
+  <div id="signup-error" class="error hidden"></div>
+  <div id="signup-note" class="note hidden" style="margin-bottom:14px;"></div>
+  <form id="form-signup">
+    <div class="field"><label for="su-name">Your name</label><input id="su-name" type="text" required minlength="2" maxlength="30" placeholder="e.g. Aria" autocomplete="nickname"></div>
+    <div class="field"><label for="su-email">Email</label><input id="su-email" type="email" required autocomplete="email"></div>
+    <div class="field"><label for="su-password">Password</label><input id="su-password" type="password" required minlength="6" autocomplete="new-password"></div>
+    <div class="field"><label for="su-referral">Referral code (optional)</label><input id="su-referral" type="text" autocomplete="off"></div>
+    <button class="btn primary" type="submit">Sign up</button>
+  </form>
+  <p style="margin-top:18px;"><a href="#" id="signup-back">← Back</a></p>
+</main>
+
+<main id="view-age" class="center-col hidden">
+  <div style="width:76px; height:76px; margin:6px auto 20px; border-radius:50%; background:var(--surface-hi); border:2px solid var(--danger); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900; color:var(--danger);">18+</div>
+  <h1 style="margin:0 0 10px;">Adults only</h1>
+  <p class="note" style="margin:0 0 20px;">Novis connects you with adult strangers for video conversations. You must be at least 18 years old to use it.</p>
+  <div class="glass" style="padding:16px 18px; text-align:left; margin-bottom:26px;">
+    <div class="safety-line"><span class="dot">•</span><span>Be respectful — no harassment or hate.</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>No nudity or sexual content involving anyone who may be under 18 — zero tolerance, reported and banned.</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Never share personal information (yours or anyone else's).</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Use Report and Block freely — blocked people can never be matched with you again.</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>This is a self-declaration, not an ID check. Lying about your age violates the terms and ends your access.</span></div>
+  </div>
+  <div style="display:grid; gap:12px;">
+    <button class="btn primary" id="btn-age-yes">I am 18 or older — Continue</button>
+    <button class="btn ghost" id="btn-age-no">I am under 18 — Exit</button>
+  </div>
+</main>
+
+<main id="view-name" class="center-col hidden">
+  <h1 style="margin:0 0 6px;">What should we call you?</h1>
+  <p class="note" style="margin:0 0 22px;">This name shows on your video frame when you connect — strangers never see your email.</p>
+  <div id="name-error" class="error hidden"></div>
+  <form id="form-name">
+    <div class="field"><label for="name-input">Your name</label><input id="name-input" type="text" required minlength="2" maxlength="30" placeholder="e.g. Aria" autocomplete="nickname"></div>
+    <button class="btn primary" type="submit">Continue</button>
+  </form>
+</main>
+
+<main id="view-banned" class="center-col hidden">
+  <h1 style="margin:0 0 10px;">Access restricted</h1>
+  <p class="note">This account can no longer use Novis. If you believe this is a mistake, please reach out from the Novis landing page.</p>
+</main>
+
+<main id="view-exit" class="center-col hidden">
+  <h1 style="margin:0 0 10px;">See you when you're 18</h1>
+  <p class="note">Novis is for adults only. You can close this tab now.</p>
+</main>
+
+<script src="js/config.js"></script>
+<script type="module" src="js/gate.js"></script>
+</body>
+</html>

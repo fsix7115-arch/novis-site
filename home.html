@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Home</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="ambient"></div>
+
+<div id="view-splash" class="splash">
+  <img class="logo logo-round" src="assets/logo.png" alt="Novis logo" width="96" height="96">
+  <div class="note">Opening Novis…</div>
+</div>
+
+<main id="view-home" class="home-wrap hidden">
+  <div class="topbar">
+    <img class="logo logo-round" src="assets/logo.png" alt="Novis logo" width="42" height="42">
+    <strong style="font-size:19px;">Novis</strong>
+    <span class="spacer"></span>
+    <span class="chip" id="account-chip">…</span>
+    <button class="icon-btn" id="btn-id" title="Copy your Novis ID">My ID</button>
+    <button class="icon-btn" id="btn-signout">Sign out</button>
+  </div>
+
+  <section class="card hero">
+    <h1>Start a Video Connection</h1>
+    <p>One tap — meet a stranger face to face. Skip anytime, end anytime.</p>
+    <a class="btn primary" href="call.html">▶ START CONNECTING</a>
+  </section>
+
+  <div class="tile-row">
+    <button class="tile" data-soon="Friends arrive in Phase 2 of the website.">
+      <h3>Friends</h3><p>Your people, your codes</p>
+    </button>
+    <button class="tile" data-soon="AI Friend arrives in Phase 2 of the website.">
+      <h3>AI Friend</h3><p>Darling / Honey — always there for you</p>
+    </button>
+    <button class="tile" data-soon="Ads Time arrives in Phase 2 of the website.">
+      <h3>Ads Time</h3><p>Watch an ad, unlock premium for 24h</p>
+    </button>
+  </div>
+
+  <div class="trust-strip">
+    <span class="chip">18+</span>
+    <span class="chip">Be respectful</span>
+    <span class="chip">Report / Block anytime</span>
+    <span class="chip">No login needed to try</span>
+  </div>
+
+  <section class="card section">
+    <h2>Recent chats</h2>
+    <p class="note" id="recent-summary">No recent chats yet.</p>
+    <p style="margin:10px 0 0;"><a href="history.html" id="recent-link" class="hidden">View recent chats →</a></p>
+  </section>
+
+  <section class="card section" id="home-instructions">
+    <h2>Good to know</h2>
+    <div class="safety-line"><span class="dot">•</span><span>18+ only</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Be respectful</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Report / Block anytime</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Never share personal details</span></div>
+    <div class="safety-line"><span class="dot">•</span><span>Calls are free — premium unlocks by watching ads</span></div>
+  </section>
+
+  <p class="muted" style="text-align:center; font-size:13px; margin-top:26px;">
+    Novis website · Phase 1 · Your calls run on the same Novis as the Android app.
+  </p>
+</main>
+
+<script src="js/config.js"></script>
+<script type="module" src="js/home.js"></script>
+</body>
+</html>
