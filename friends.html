@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Friends</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main class="page-wrap">
+  <div class="page-head">
+    <a class="back-btn" href="home.html">← Home</a>
+    <h1>Friends</h1>
+  </div>
+
+  <p class="note" id="friendsLoading">Loading your friends…</p>
+
+  <!-- Guest pitch: friends need a free account (app rule) -->
+  <div id="view-pitch" class="hidden">
+    <section class="card" style="text-align:center;">
+      <div style="font-size:40px;">👥</div>
+      <h2 style="margin:12px 0 8px;">Create your Novis account</h2>
+      <p class="note">Profiles, friends, referral rewards and Ads Time need a free account. You can keep chatting anonymously too — signing up is optional.</p>
+      <p style="margin-top:18px;"><a class="btn primary" href="index.html">Create account</a></p>
+      <p><a class="btn" href="index.html" style="display:inline-flex;">I have an account</a></p>
+    </section>
+  </div>
+
+  <div id="view-friends" class="hidden">
+    <section class="card hidden" id="invitesCard" style="margin-bottom:16px;">
+      <h2 style="margin-top:0;">Group invitations</h2>
+      <div id="invitesList"></div>
+    </section>
+
+    <section class="card">
+      <h2 style="margin-top:0;">Add a friend</h2>
+      <p class="note">Enter their friend code — the same code works for referrals.</p>
+      <form class="dost-input" id="addForm">
+        <input id="addInput" maxlength="12" placeholder="Friend code" autocomplete="off" style="text-transform:uppercase;">
+        <button class="btn primary" type="submit">Add</button>
+      </form>
+      <p class="note">Your own code lives on your <a href="profile.html">Profile page</a>.</p>
+    </section>
+
+    <section class="card section">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <h2 style="margin:0; flex:1;">Your friends</h2>
+        <button class="icon-btn" id="btnSelectMode" type="button">Start group call</button>
+      </div>
+      <p class="note hidden" id="selectHint">Pick up to 3 friends, then start the video call — group calls hold 4 people, you plus 3 friends.</p>
+      <div id="friendsList"></div>
+      <p class="note" id="friendsEmpty">No friends yet. Add one with their code above.</p>
+      <p class="hidden" id="startRow" style="margin-top:14px;">
+        <button class="btn primary" id="btnStartGroup" type="button">Video call</button>
+      </p>
+    </section>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ripple.js"></script>
+<script type="module" src="js/friends.js"></script>
+</body>
+</html>

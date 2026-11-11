@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Ads Time</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main class="page-wrap">
+  <div class="page-head">
+    <a class="back-btn" href="home.html">← Home</a>
+    <h1>Ads Time</h1>
+  </div>
+
+  <p class="note" id="adsLoading">Loading your Ads Time…</p>
+
+  <div id="view-error" class="hidden">
+    <section class="card" style="text-align:center;">
+      <p>Ads Time is available for signed-in users. If you are signed in, pull back and try again.</p>
+      <p style="margin-top:14px;"><button class="btn" id="btnAdsRetry" type="button">Retry</button></p>
+    </section>
+  </div>
+
+  <div id="view-ads" class="hidden">
+    <section class="card">
+      <div class="list-row">
+        <span class="grow" style="font-weight:700;">Balance</span>
+        <span class="balance-big" id="balanceBig">0 min</span>
+      </div>
+      <div class="list-row">
+        <span class="grow sub" id="activeText">Turn on to enjoy Novis with zero ads. Your balance is saved while it is off.</span>
+        <label class="switch">
+          <input type="checkbox" id="adsSwitchPage" disabled>
+          <span class="track"></span>
+        </label>
+      </div>
+      <p class="note" id="earnNote" style="margin-top:12px;"></p>
+    </section>
+
+    <section class="card section">
+      <h2 style="margin-top:0;">Premium time</h2>
+      <p class="note" id="premiumLine">Every lock in Novis — bonus themes, the golden profile frame — opens with premium time: one rewarded ad adds 24 hours to the one shared clock.</p>
+      <div id="premiumNote" style="margin-top:8px;"></div>
+    </section>
+
+    <section class="card section">
+      <h2 style="margin-top:0;">History</h2>
+      <div id="ledgerList"></div>
+      <p class="note" id="ledgerEmpty">Nothing yet. Earned minutes and ad-free time you use will show here.</p>
+    </section>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ripple.js"></script>
+<script type="module" src="js/ads-time.js"></script>
+</body>
+</html>

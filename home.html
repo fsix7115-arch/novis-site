@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
 </head>
 <body>
 <div class="ambient"></div>
@@ -27,6 +28,8 @@
     <span class="spacer"></span>
     <span class="chip" id="account-chip">…</span>
     <button class="icon-btn" id="btn-id" title="Copy your Novis ID">My ID</button>
+    <a class="icon-btn" href="profile.html" style="text-decoration:none;">Profile</a>
+    <a class="icon-btn" href="settings.html" style="text-decoration:none;">Settings</a>
     <button class="icon-btn" id="btn-signout">Sign out</button>
   </div>
 
@@ -36,16 +39,21 @@
     <a class="btn primary" href="call.html">▶ START CONNECTING</a>
   </section>
 
+  <!-- Ad placement slot (Home only, like the app). Stays empty until
+       AdSense approval lands real inventory; Testing premium hides
+       it via the site-wide ad gate. -->
+  <div class="ad-slot" id="ad-slot-home"></div>
+
   <div class="tile-row">
-    <button class="tile" data-soon="Friends arrive in Phase 2 of the website.">
+    <a class="tile" href="friends.html">
       <h3>Friends</h3><p>Your people, your codes</p>
-    </button>
-    <button class="tile" data-soon="AI Friend arrives in Phase 2 of the website.">
+    </a>
+    <a class="tile" href="ai-friend.html">
       <h3>AI Friend</h3><p>Darling / Honey — always there for you</p>
-    </button>
-    <button class="tile" data-soon="Ads Time arrives in Phase 2 of the website.">
+    </a>
+    <a class="tile" href="ads-time.html">
       <h3>Ads Time</h3><p>Watch an ad, unlock premium for 24h</p>
-    </button>
+    </a>
   </div>
 
   <div class="trust-strip">
@@ -71,7 +79,7 @@
   </section>
 
   <p class="muted" style="text-align:center; font-size:13px; margin-top:26px;">
-    Novis website · Phase 1 · Your calls run on the same Novis as the Android app.
+    Novis website · Phase 2 · Your calls run on the same Novis as the Android app.
   </p>
 </main>
 

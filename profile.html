@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Profile</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main class="page-wrap">
+  <div class="page-head">
+    <a class="back-btn" href="home.html">← Home</a>
+    <h1>Profile</h1>
+  </div>
+
+  <p class="note" id="profileLoading">Loading your profile…</p>
+
+  <!-- Guest pitch (mirrors the app: profiles need a free account) -->
+  <div id="view-pitch" class="hidden">
+    <section class="card" id="pitchAnonCard" style="margin-bottom:16px;">
+      <div style="display:flex; gap:14px; align-items:center;">
+        <span id="pitchAvatar"></span>
+        <div>
+          <div id="pitchName" style="font-weight:800; font-size:18px;">Novis guest</div>
+          <div class="muted" style="font-size:13px;">Novis ID · <span id="pitchShortId"></span></div>
+          <div class="muted" style="font-size:13px;">This is how strangers see you in calls.</div>
+        </div>
+      </div>
+    </section>
+    <section class="card" style="text-align:center;">
+      <div style="font-size:40px;">👤</div>
+      <h2 style="margin:12px 0 8px;">Create your Novis account</h2>
+      <p class="note">Profiles, friends, referral rewards and Ads Time need a free account. You can keep chatting anonymously too — signing up is optional.</p>
+      <p style="margin-top:18px;"><a class="btn primary" href="index.html">Create account</a></p>
+      <p><a class="btn" href="index.html" style="display:inline-flex;">I have an account</a></p>
+    </section>
+  </div>
+
+  <!-- Signed-in profile form -->
+  <div id="view-form" class="hidden">
+    <section class="card">
+      <div style="text-align:center;" id="avatarPreview"></div>
+      <div class="preset-row" id="presetRow" style="margin-top:14px;"></div>
+
+      <div class="list-row" style="margin-top:18px;">
+        <span class="avatar" style="width:36px; height:36px; font-size:16px; background:linear-gradient(135deg,#ffe082,#ffb300,#ff8f00);">★</span>
+        <span class="grow" style="font-weight:600;">Golden profile frame</span>
+        <span id="goldenControl"></span>
+      </div>
+      <div id="goldenNote"></div>
+
+      <div class="field" style="margin-top:16px;">
+        <label for="fieldName">Display name</label>
+        <input id="fieldName" maxlength="60" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="fieldBio">Bio</label>
+        <textarea id="fieldBio" rows="3" maxlength="140" placeholder="A line about you (shown on your public profile)"></textarea>
+      </div>
+      <p class="note hidden" id="profileError" style="color:#ff8a80;"></p>
+      <button class="btn primary" id="btnSave" type="button">Save profile</button>
+
+      <div class="list-row" style="margin-top:14px;">
+        <span class="grow">Novis ID<br><span class="sub" id="myFullId" style="font-size:12px;"></span></span>
+        <button class="icon-btn" id="btnCopyId" type="button">Copy</button>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2 style="margin-top:0;">Your friend &amp; referral code</h2>
+      <p class="note">Share it by reading it out or typing it — friends add you with this code, and referrals use the same code.</p>
+      <div class="friend-code" id="friendCode">…</div>
+      <p class="note hidden" id="codeNote" style="color:var(--warning);"></p>
+      <button class="btn" id="btnNewCode" type="button" style="margin-top:10px;">↻ Generate new code</button>
+    </section>
+
+    <p style="margin-top:22px;">
+      <button class="btn danger-outline" id="btnSignOut" type="button" style="width:100%;">Sign out</button>
+    </p>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ripple.js"></script>
+<script type="module" src="js/profile.js"></script>
+</body>
+</html>

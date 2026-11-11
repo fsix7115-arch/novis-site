@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — Settings</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main class="page-wrap">
+  <div class="page-head">
+    <a class="back-btn" href="home.html">← Home</a>
+    <h1>Settings</h1>
+  </div>
+
+  <section class="card">
+    <h2 style="margin-top:0;">Calls</h2>
+    <div class="list-row">
+      <span class="grow">
+        Speaker on top
+        <div class="sub">In group calls, show whoever is speaking above pinned participants</div>
+      </span>
+      <label class="switch">
+        <input type="checkbox" id="speakerSwitch">
+        <span class="track"></span>
+      </label>
+    </div>
+  </section>
+
+  <section class="card section">
+    <h2 style="margin-top:0;">Ads Time</h2>
+    <div class="list-row">
+      <span class="grow">Ad-free balance</span>
+      <strong id="adsBalance">…</strong>
+    </div>
+    <div class="list-row">
+      <span class="grow sub">Ads Time ON = zero ads. OFF = balance stays saved.</span>
+      <label class="switch">
+        <input type="checkbox" id="adsSwitch" disabled>
+        <span class="track"></span>
+      </label>
+    </div>
+    <p style="margin-top:12px;"><a class="btn" href="ads-time.html" style="display:inline-flex;">Earn Ads Time &amp; history</a></p>
+  </section>
+
+  <section class="card section">
+    <h2 style="margin-top:0;">Appearance</h2>
+    <div id="accentList"></div>
+    <div id="appearanceNote" style="margin-top:10px;"></div>
+  </section>
+
+  <p style="margin-top:22px;">
+    <button class="btn danger-outline" id="btnSignOut" type="button" style="width:100%;">Sign out</button>
+  </p>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ripple.js"></script>
+<script type="module" src="js/settings.js"></script>
+</body>
+</html>
