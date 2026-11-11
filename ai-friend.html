@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novis — AI Friend</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<script src="js/accent.js"></script>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main class="page-wrap">
+  <div class="page-head">
+    <a class="back-btn" href="home.html">← Home</a>
+    <h1>AI Friend</h1>
+  </div>
+
+  <div class="dost-head">
+    <span class="dost-avatar" id="dostAvatar" style="width:42px; height:42px; font-size:19px;">H</span>
+    <div>
+      <div id="dostName" style="font-weight:800; font-size:17px;">Honey</div>
+      <div class="muted" id="dostTagline" style="font-size:13px;">Your own friend — heart-to-heart, never any judgement</div>
+    </div>
+  </div>
+
+  <div class="persona-row">
+    <button class="persona-card" id="personaMale" type="button">
+      <span class="dost-avatar" style="width:36px; height:36px; font-size:16px; background:linear-gradient(135deg,#ffc46b,#ff7a18);">D</span>
+      <span><span class="pname">Darling</span><br><span class="pkind">(Male friend)</span></span>
+      <span class="check hidden" data-check>✓</span>
+    </button>
+    <button class="persona-card" id="personaFemale" type="button">
+      <span class="dost-avatar" style="width:36px; height:36px; font-size:16px; background:linear-gradient(135deg,#ff8fab,#8b5cf6);">H</span>
+      <span><span class="pname">Honey</span><br><span class="pkind">(Female friend)</span></span>
+      <span class="check hidden" data-check>✓</span>
+    </button>
+  </div>
+
+  <section class="card">
+    <div id="dostNotReady" class="dost-empty hidden">
+      <div style="font-size:44px;">♡</div>
+      <p style="font-size:16px; margin-top:10px;">AI Friend is getting ready — coming very soon</p>
+    </div>
+    <div id="dostEmpty" class="dost-empty">
+      <span class="dost-avatar" id="dostEmptyAvatar" style="width:92px; height:92px; font-size:40px;">H</span>
+      <p id="dostGreeting" style="margin-top:18px;">Say hello to Honey — short, sweet chats, in your own language.</p>
+      <div class="starter-row" id="starterRow"></div>
+    </div>
+    <div id="dostLog" class="dost-log hidden"></div>
+    <div id="dostTyping" class="hidden"><span class="typing-dots"><i></i><i></i><i></i></span></div>
+    <div id="dostError" class="dost-error hidden">
+      <span style="flex:1;">Message could not be sent.</span>
+      <button class="icon-btn" id="btnDostRetry" type="button">Retry</button>
+    </div>
+    <div id="dostLimit" class="dost-banner hidden">That's all for today — let's talk again tomorrow.</div>
+    <form class="dost-input" id="dostForm">
+      <input id="dostInput" maxlength="500" placeholder="Message Honey…" autocomplete="off">
+      <button class="send-btn" id="btnDostSend" type="submit" title="Send">➤</button>
+    </form>
+  </section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ripple.js"></script>
+<script type="module" src="js/ai-friend.js"></script>
+</body>
+</html>
