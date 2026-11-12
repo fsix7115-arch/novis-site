@@ -338,7 +338,7 @@ button.badge { cursor: pointer; font: inherit; }
    frames wrappers dissolve (display:contents) so flex order can run
    across them: remote frame, self frame, chat, banner, toolbar. */
 @media (max-width: 1023px) {
-  .call-layout { flex-direction: column; padding: 8px; gap: 8px; }
+  .call-layout { flex-direction: column; padding: 16px; gap: 8px; }
   .stage, .frames { display: contents; }
   .frame-slot { display: contents; }
   .frame { width: 100%; flex: none; }
