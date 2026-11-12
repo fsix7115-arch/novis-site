@@ -368,9 +368,9 @@ button.badge { cursor: pointer; font: inherit; }
 @media (min-width: 1024px) {
   #btnChatShow { display: none !important; }
 }
-/* v3 — the new header / chat controls are desktop-only; the phone
-   call layout (stranger > self > chat > toolbar) lives in its own
-   block above and in the group block below. */
+/* v3 — Reset layout and chat minimise/maximise are desktop-only;
+   Fullscreen, Settings and Profile show on the phone header too
+   (the header wraps, so they flow onto a second row when needed). */
 @media (max-width: 1023px) {
   .desktop-only, #btnChatMin, #btnChatMax { display: none !important; }
 }
