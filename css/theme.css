@@ -338,7 +338,7 @@ button.badge { cursor: pointer; font: inherit; }
    frames wrappers dissolve (display:contents) so flex order can run
    across them: remote frame, self frame, chat, banner, toolbar. */
 @media (max-width: 1023px) {
-  .call-layout { flex-direction: column; padding: 16px; gap: 8px; }
+  .call-layout { flex-direction: column; padding: 24px; gap: 8px; }
   .stage, .frames { display: contents; }
   .frame-slot { display: contents; }
   .frame { width: 100%; flex: none; }
@@ -368,8 +368,8 @@ button.badge { cursor: pointer; font: inherit; }
 @media (min-width: 1024px) {
   #btnChatShow { display: none !important; }
 }
-/* v3 — Reset layout and chat minimise/maximise are desktop-only;
-   Fullscreen, Settings and Profile show on the phone header too
+/* v3 — Fullscreen, Reset layout and chat minimise/maximise are
+   desktop-only; Settings and Profile show on the phone header too
    (the header wraps, so they flow onto a second row when needed). */
 @media (max-width: 1023px) {
   .desktop-only, #btnChatMin, #btnChatMax { display: none !important; }
