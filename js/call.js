@@ -33,6 +33,7 @@ const els = {
   btnMic: $('btnMic'), micLabel: $('micLabel'), btnFlip: $('btnFlip'),
   btnSpeaker: $('btnSpeaker'), btnHand: $('btnHand'), btnPause: $('btnPause'),
   btnNext: $('btnNext'), btnEnd: $('btnEnd'), btnAdd: $('btnAdd'),
+  btnUnmuteNow: $('btnUnmuteNow'), btnUnmuteDismiss: $('btnUnmuteDismiss'),
   openPill: $('openPill'), groupOffers: $('groupOffers'),
   groupStack: $('groupStack'), groupSelfSlot: $('groupSelfSlot'),
   groupNotice: $('groupNotice'), selfFrame: $('selfFrame'), selfSlot: $('selfSlot'),
@@ -209,6 +210,23 @@ async function searchNext() {
     repollTimer = setInterval(async () => {
       if (ending || phase !== 'searching') return;
       try {
+        // The realtime UPDATE on my own ticket is the primary match
+        // signal; if it was missed (slow subscribe, network blip),
+        // the RPC alone cannot recover it — it never returns an
+        // existing match — so read my own latest ticket row first.
+        // The latest row during a search is always from this search:
+        // every re-poll inserts a fresh one, and a peer flips it to
+        // 'matched' when the pair is made.
+        const { data: ticket } = await supabase
+          .from('matchmaking_queue')
+          .select('id, status, room_id')
+          .eq('user_id', myId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (ticket?.status === 'matched' && ticket.room_id) {
+          return connectMatch({ isMatched: true, roomId: ticket.room_id, role: 'offerer', peerId: null, queueId: ticket.id });
+        }
         const again = await findOrJoin();
         if (again.isMatched) connectMatch(again);
       } catch { /* transient failure: keep waiting */ }
@@ -501,7 +519,7 @@ async function initializeCall() {
 
   const iceServers = await fetchIceServers();
   pc = new RTCPeerConnection({ iceServers });
-  for (const track of localStream.getTracks()) pc.addTrack(track, localStream);
+  for (const track of (localStream?.getTracks() ?? [])) pc.addTrack(track, localStream);
 
   pc.onicecandidate = (event) => {
     if (!event.candidate) return;
@@ -782,6 +800,9 @@ function fail(message) {
   phase = 'failed';
   els.failText.textContent = message;
   els.failBanner.classList.remove('hidden');
+  // The error must be visible in the main frame too — on a phone the
+  // banner sits below the fold.
+  showPlaceholder('Connection problem', message);
   setPhaseVisualForFail();
 }
 function setPhaseVisualForFail() {
@@ -934,7 +955,11 @@ $('btnRetry').addEventListener('click', async () => {
   els.failBanner.classList.add('hidden');
   await teardownPeer();
   connectingMatch = false;
-  searchNext();
+  // Retry re-runs the whole prepare sequence (countdown + a fresh
+  // camera request) — jumping straight to search with no camera
+  // would fail again at once.
+  if (entryMode === 'group' && entryRoomId) return startGroupEntry(entryRoomId);
+  startPrepare();
 });
 
 async function endSession() {
@@ -1299,7 +1324,7 @@ function ensureGroupPeer(userId) {
     pending: [], speaking: false, connected: false,
   };
   gPeers.set(userId, peer);
-  for (const track of localStream.getTracks()) conn.addTrack(track, localStream);
+  for (const track of (localStream?.getTracks() ?? [])) conn.addTrack(track, localStream);
   conn.onicecandidate = (event) => {
     if (!event.candidate) return;
     const c = event.candidate;
@@ -2044,26 +2069,187 @@ grip.addEventListener('pointerdown', (e) => {
 // ===================================================================
 // Session start: guards → local preview → 5s prepare → search
 // (CallController.startStrangerVideo — prepare runs ONCE per entry)
+//
+// The 5-second countdown starts the moment the page opens and NEVER
+// waits for the camera: the old code awaited getUserMedia() first,
+// so an unanswered permission prompt froze the page on "Getting
+// ready" forever (no countdown, no camera, no start). Media is now
+// requested in parallel with a timeout, and a denied / timed-out /
+// busy camera shows a plain-English blocked state with a Retry
+// button that re-runs the whole prepare sequence.
 // ===================================================================
-async function initLocalMedia() {
-  try {
-    localStream = await navigator.mediaDevices.getUserMedia({
-      audio: true, video: { facingMode: 'user' },
-    });
-  } catch (e) {
-    if (e?.name === 'NotAllowedError') {
-      fail('Camera and microphone permission is required to make calls. Please allow them and try again.');
-    } else {
-      fail(`Call setup failed: ${e.message ?? e}`);
-    }
-    return false;
+const MEDIA_TIMEOUT_MS = 10000; // an unanswered prompt must never hang the page
+let mediaState = 'idle'; // idle|waiting|ready|blocked
+let prepareDone = false;
+let mediaReady = false;
+let entryMode = 'call'; // call|group
+let entryRoomId = '';
+
+function localStreamLive() {
+  return !!localStream && localStream.getTracks().some((t) => t.readyState === 'live');
+}
+
+function classifyMediaError(e) {
+  switch (e?.name) {
+    case 'NotAllowedError':
+      return { title: 'Camera blocked', text: 'Camera and microphone are blocked. Tap Allow in your browser, then tap Retry.' };
+    case 'MediaTimeoutError':
+      return { title: 'Waiting for camera', text: 'Camera permission is still waiting. Tap Allow in your browser, then tap Retry.' };
+    case 'NotFoundError':
+    case 'OverconstrainedError':
+      return { title: 'No camera found', text: 'No camera or microphone was found on this device.' };
+    case 'NotReadableError':
+      return { title: 'Camera is busy', text: 'Your camera is busy in another app or tab. Close it, then tap Retry.' };
+    default:
+      return { title: 'Connection problem', text: `Call setup failed: ${e?.message ?? e}` };
   }
-  els.localVideo.srcObject = localStream;
-  return true;
+}
+
+/// One camera/mic attempt with a hard timeout. If the browser's
+/// permission prompt is never answered, the timeout wins — and any
+/// stream the abandoned attempt eventually yields is stopped at once
+/// so the camera never stays on behind our back.
+async function requestLocalMedia() {
+  let timer = null;
+  let abandoned = false;
+  const attempt = navigator.mediaDevices.getUserMedia({
+    audio: true, video: { facingMode: 'user' },
+  });
+  attempt.then(
+    (stream) => { if (abandoned) for (const t of stream.getTracks()) t.stop(); },
+    () => {},
+  );
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      abandoned = true;
+      const e = new Error('Camera permission is still waiting.');
+      e.name = 'MediaTimeoutError';
+      reject(e);
+    }, MEDIA_TIMEOUT_MS);
+  });
+  try {
+    return await Promise.race([attempt, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function showMediaBlocked(info) {
+  fail(info.text);
+  setStatus(info.title);
+  showPlaceholder(info.title, info.text);
+}
+
+/// Media request running alongside the countdown. Success shows the
+/// local preview at once and starts the search the moment the
+/// countdown has also finished; failure shows the blocked state.
+async function acquireLocalMedia() {
+  if (localStreamLive()) {
+    mediaState = 'ready';
+    mediaReady = true;
+    els.localVideo.srcObject = localStream;
+    els.localVideo.play().catch(() => {});
+    maybeStartSearch();
+    return;
+  }
+  mediaState = 'waiting';
+  try {
+    localStream = await requestLocalMedia();
+    mediaState = 'ready';
+    mediaReady = true;
+    els.localVideo.srcObject = localStream;
+    els.localVideo.play().catch(() => {});
+    maybeStartSearch();
+  } catch (e) {
+    mediaState = 'blocked';
+    mediaReady = false;
+    showMediaBlocked(classifyMediaError(e));
+  }
+}
+
+/// The 5-second prepare countdown — starts immediately on entry and
+/// never waits for the camera. When it hits zero with the camera
+/// ready, the search starts; with the camera still pending, the page
+/// says so plainly instead of sitting on a frozen "5".
+function startPrepareCountdown() {
+  clearInterval(prepareCountdown); prepareCountdown = null;
+  let left = PREPARE_SECONDS;
+  els.prepareCount.textContent = String(left);
+  prepareCountdown = setInterval(() => {
+    if (phase !== 'preparing') return;
+    left = Math.max(0, left - 1);
+    els.prepareCount.textContent = left > 0 ? String(left) : '';
+    if (left === 0) {
+      clearInterval(prepareCountdown); prepareCountdown = null;
+      prepareDone = true;
+      if (!mediaReady && phase === 'preparing') {
+        setStatus('Waiting for camera…');
+        showPlaceholder('Waiting for camera', 'Tap Allow when your browser asks — the call starts as soon as the camera is on.');
+      }
+      maybeStartSearch();
+    }
+  }, 1000);
+}
+
+function maybeStartSearch() {
+  if (ending || phase !== 'preparing') return;
+  if (!prepareDone || !mediaReady) return;
+  searchNext();
+}
+
+/// One full prepare run: countdown + camera in parallel. Used at boot
+/// and by Retry, so a denied camera can always recover.
+function startPrepare() {
+  prepareDone = false;
+  mediaReady = false;
+  mediaState = 'idle';
+  setPhase('preparing');
+  startPrepareCountdown();
+  acquireLocalMedia();
+}
+
+/// Group entry (friends invite / hosted room): same camera rules —
+/// timeout + blocked state with Retry — then the mesh takes over
+/// with no prepare and no search, like the app.
+async function startGroupEntry(rid) {
+  clearInterval(prepareCountdown); prepareCountdown = null;
+  setPhase('preparing');
+  setStatus('Joining group…');
+  showPlaceholder('Getting ready', 'Your camera is on — joining the group in a moment.');
+  try {
+    if (!localStreamLive()) {
+      localStream = await requestLocalMedia();
+    }
+    els.localVideo.srcObject = localStream;
+    els.localVideo.play().catch(() => {});
+  } catch (e) {
+    showMediaBlocked(classifyMediaError(e));
+    return;
+  }
+  try {
+    const { data: mine } = await supabase
+      .from('room_participants')
+      .select('left_at, removed_at')
+      .eq('room_id', rid).eq('user_id', myId).maybeSingle();
+    if (!mine || mine.left_at || mine.removed_at) {
+      toast('That group is no longer available.');
+      return location.replace('home.html');
+    }
+  } catch {
+    toast('That group is no longer available.');
+    return location.replace('home.html');
+  }
+  await enterGroup(rid, { friends: true });
 }
 
 async function boot() {
   applyAdsGate(); // Testing premium hides every ad, site-wide
+  // Show the prepare state at once — before the session/profile
+  // round-trips — so the countdown is visible the moment the page
+  // opens. startPrepare() below restarts it cleanly once the
+  // guards pass.
+  setPhase('preparing');
+  startPrepareCountdown();
   const user = await currentUser();
   if (!user) return location.replace('index.html');
   if (localStorage.getItem(LS.age) !== '1') return location.replace('index.html');
@@ -2077,39 +2263,13 @@ async function boot() {
   // room — the mesh then takes over with no prepare, no search.
   const params = new URLSearchParams(location.search);
   if (params.get('group') === '1' && params.get('room')) {
-    const rid = params.get('room');
-    setStatus('Joining group…');
-    if (!await initLocalMedia()) return;
-    try {
-      const { data: mine } = await supabase
-        .from('room_participants')
-        .select('left_at, removed_at')
-        .eq('room_id', rid).eq('user_id', myId).maybeSingle();
-      if (!mine || mine.left_at || mine.removed_at) {
-        toast('That group is no longer available.');
-        return location.replace('home.html');
-      }
-    } catch {
-      toast('That group is no longer available.');
-      return location.replace('home.html');
-    }
-    await enterGroup(rid, { friends: true });
-    return;
+    entryMode = 'group';
+    entryRoomId = params.get('room');
+    return startGroupEntry(entryRoomId);
   }
-
-  setPhase('preparing');
-  if (!await initLocalMedia()) return;
-  let left = PREPARE_SECONDS;
-  els.prepareCount.textContent = String(left);
-  prepareCountdown = setInterval(() => {
-    if (phase !== 'preparing') return;
-    left = Math.max(0, left - 1);
-    els.prepareCount.textContent = left > 0 ? String(left) : '';
-  }, 1000);
-  prepareTimer = setTimeout(() => {
-    clearInterval(prepareCountdown);
-    searchNext();
-  }, PREPARE_SECONDS * 1000);
+  entryMode = 'call';
+  entryRoomId = '';
+  startPrepare();
 }
 
 boot();
