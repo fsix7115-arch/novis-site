@@ -2121,12 +2121,24 @@ $('btnResetLayout').addEventListener('click', resetLayout);
 $('btnFullscreen').addEventListener('click', toggleFullscreen);
 document.addEventListener('fullscreenchange', syncFullscreenLabel);
 if (!document.documentElement?.requestFullscreen) $('btnFullscreen').classList.add('hidden');
+let chatSlideTimer = null;
 $('btnChatHide').addEventListener('click', () => {
-  chatPanel.classList.add('chat-hidden');
-  $('btnChatShow').classList.remove('hidden');
+  clearTimeout(chatSlideTimer);
+  // Slide down + fade out first, then hide — so the direction is visible.
+  chatPanel.classList.add('chat-sliding');
+  chatSlideTimer = setTimeout(() => {
+    chatPanel.classList.add('chat-hidden');
+    chatPanel.classList.remove('chat-sliding');
+    $('btnChatShow').classList.remove('hidden');
+  }, 300);
 });
 $('btnChatShow').addEventListener('click', () => {
+  clearTimeout(chatSlideTimer);
+  // Unhide below its spot, then glide back up into place.
   chatPanel.classList.remove('chat-hidden');
+  chatPanel.classList.add('chat-sliding');
+  void chatPanel.offsetHeight;
+  chatPanel.classList.remove('chat-sliding');
   $('btnChatShow').classList.add('hidden');
 });
 // Restore the saved layout on entry (desktop only); a first visit

@@ -334,9 +334,9 @@ button.badge { cursor: pointer; font: inherit; }
   border-bottom-right-radius: 16px; touch-action: none;
 }
 
-/* Phone call layout: stranger > chat > you > toolbar. The stage and
+/* Phone call layout: stranger > you > chat > toolbar. The stage and
    frames wrappers dissolve (display:contents) so flex order can run
-   across them: remote frame, chat, self frame, banner, toolbar. */
+   across them: remote frame, self frame, chat, banner, toolbar. */
 @media (max-width: 1023px) {
   .call-layout { flex-direction: column; padding: 8px; gap: 8px; }
   .stage, .frames { display: contents; }
@@ -344,13 +344,17 @@ button.badge { cursor: pointer; font: inherit; }
   .frame { width: 100%; flex: none; }
   #remoteFrame { order: 1; }
   .chat-panel {
-    order: 2; width: auto; flex: 1 1 auto; min-height: 110px;
+    order: 3; width: auto; flex: 1 1 auto; min-height: 110px;
     border-left: none; border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
   }
-  #selfFrame { order: 3; }
+  #selfFrame { order: 2; }
   .stage-banner { order: 4; }
   .toolbar { order: 5; padding: 2px 0 0; }
   .chat-panel.chat-hidden { display: none; }
+  /* Phone chat hide/open slides: the panel glides down and fades out,
+     and glides back up from the same spot when reopened. */
+  .chat-panel { transition: transform .3s ease, opacity .3s ease; }
+  .chat-panel.chat-sliding { transform: translateY(24px); opacity: 0; }
 }
 
 .phone-only { display: none; }
@@ -365,7 +369,8 @@ button.badge { cursor: pointer; font: inherit; }
   #btnChatShow { display: none !important; }
 }
 /* v3 — the new header / chat controls are desktop-only; the phone
-   call layout (stranger > chat > self > toolbar) stays untouched. */
+   call layout (stranger > self > chat > toolbar) lives in its own
+   block above and in the group block below. */
 @media (max-width: 1023px) {
   .desktop-only, #btnChatMin, #btnChatMax { display: none !important; }
 }
@@ -498,9 +503,9 @@ body.group-mode .frames { display: none; }
   body.group-mode .group-tile, body.group-mode #groupStack .frame {
     width: 100% !important; height: auto !important; aspect-ratio: 16 / 9;
   }
-  body.group-mode .group-self-slot { order: 3; display: block; }
+  body.group-mode .group-self-slot { order: 2; display: block; }
   body.group-mode .group-self-slot .frame { width: 100%; }
-  body.group-mode .chat-panel { order: 2; }
+  body.group-mode .chat-panel { order: 3; }
 }
 
 /* ==== Phase 2 pages: AI Friend / Profile / Friends / Settings ====== */
