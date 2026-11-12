@@ -623,3 +623,127 @@ body.group-mode .frames { display: none; }
   background: transparent; border: 1px solid var(--danger); color: #ff8a80;
 }
 a.tile { text-decoration: none; color: var(--text); display: block; }
+
+/* ---------- Learn page (public landing, mirrors novis-web content) --
+   Same words as the novis-web landing, styled with this site's own
+   theme (Fraunces + Manrope, warm ambient background). No ads here:
+   AdSense stays on novis-web only. */
+.learn-wrap { max-width: 1200px; margin: 0 auto; padding: 0 22px; }
+.learn { color: var(--text); }
+.learn a { color: inherit; }
+.learn h1 { font-size: clamp(2.4rem, 5.5vw, 3.9rem); line-height: 1.08; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 8px; }
+.learn .grad { background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.learn .btn { width: auto; }
+.learn .card h3 { font-size: 1.08rem; margin: 0 0 8px; }
+.learn .card p { color: var(--text-2); font-size: 0.94rem; margin: 0; line-height: 1.6; }
+
+/* Sticky header nav */
+.learn-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(43, 18, 32, 0.62); backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+}
+.learn-nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.learn-logo { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 800; letter-spacing: 0.5px; text-decoration: none; }
+.learn-logo img { width: 34px; height: 34px; border-radius: 9px; }
+.learn-logo span em { font-style: normal; background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.learn-links { display: flex; gap: 28px; font-size: 0.95rem; color: var(--text-2); align-items: center; }
+.learn-links a { text-decoration: none; }
+.learn-links a:hover { color: var(--text); }
+.learn-links .btn.primary { color: #fff; }
+.learn-burger { display: none; background: none; border: 0; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+@media (max-width: 720px) {
+  .learn-links { display: none; position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; align-items: flex-start; background: rgba(52, 22, 38, 0.95); backdrop-filter: blur(18px); padding: 18px 22px; gap: 16px; border-bottom: 1px solid var(--border); }
+  .learn-links.open { display: flex; }
+  .learn-burger { display: block; }
+}
+
+/* Hero */
+.learn-hero { padding: 84px 22px 70px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+@media (min-width: 1100px) { .learn-hero { gap: 68px; } }
+@media (max-width: 880px) { .learn-hero { grid-template-columns: 1fr; padding-top: 56px; } }
+.learn-badge { margin-bottom: 20px; }
+.learn-badge b { color: var(--glow-amber); font-weight: 600; }
+.learn-hero .lead { margin: 22px 0 32px; color: var(--text-2); font-size: 1.13rem; max-width: 520px; line-height: 1.6; }
+.learn-hero .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+.learn-hero .cta .btn { padding: 14px 26px; font-size: 1rem; }
+.learn-hero .fine { margin-top: 18px; color: var(--text-2); font-size: 0.88rem; }
+
+/* Phone mockup — glass panel with chat preview */
+.learn-phone { justify-self: center; width: 290px; max-width: 86vw; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); border-radius: 38px; padding: 14px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.learn-screen { background: rgba(48, 22, 36, 0.9); border-radius: 28px; overflow: hidden; }
+.learn-screen-top { padding: 16px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.learn-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--brand-gradient); display: grid; place-items: center; font-weight: 700; color: #fff; }
+.learn-screen-top small { display: block; color: var(--text-2); font-size: 0.72rem; }
+.learn-screen-top b { font-size: 0.92rem; }
+.learn-chat { padding: 18px 16px 8px; display: flex; flex-direction: column; gap: 10px; min-height: 240px; }
+.learn-msg { max-width: 78%; padding: 9px 13px; border-radius: 16px; font-size: 0.86rem; line-height: 1.45; }
+.learn-msg.in { background: #4b2539; align-self: flex-start; border-bottom-left-radius: 4px; }
+.learn-msg.out { background: var(--brand-gradient); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.learn-typing { align-self: flex-start; color: var(--text-2); font-size: 0.78rem; padding: 2px 6px; }
+.learn-actions { display: flex; gap: 8px; padding: 12px 14px 16px; }
+.learn-chip { flex: 1; text-align: center; padding: 9px 0; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.04); }
+.learn-chip.next { background: var(--brand-gradient); color: #fff; border: 0; }
+.learn-chip.end { color: #ff7b93; }
+
+/* Sections */
+.learn-section { padding: 72px 0; }
+.learn-section[id] { scroll-margin-top: 80px; }
+@media (min-width: 881px) { .learn-hero { padding-top: 64px; padding-bottom: 54px; } .learn-section { padding: 56px 0; } }
+.learn .kicker { text-align: center; color: var(--glow-amber); font-weight: 700; letter-spacing: 2.5px; font-size: 0.78rem; text-transform: uppercase; margin: 0; }
+.learn-section h2 { text-align: center; font-size: clamp(1.7rem, 3.6vw, 2.4rem); margin: 10px 0 14px; font-weight: 800; }
+.learn-section .sub { text-align: center; color: var(--text-2); max-width: 620px; margin: 0 auto 44px; line-height: 1.6; }
+@media (min-width: 881px) { .learn-section .sub { margin-bottom: 36px; } }
+.learn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 880px) { .learn-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .learn-grid { grid-template-columns: 1fr; } }
+.learn-icon { width: 48px; height: 48px; border-radius: 13px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.12); display: grid; place-items: center; margin-bottom: 16px; }
+.learn-icon svg { width: 24px; height: 24px; }
+.learn-icon.small { width: 42px; height: 42px; border-radius: 11px; flex: 0 0 auto; margin-bottom: 0; }
+.learn-icon.small svg { width: 21px; height: 21px; }
+.learn-icon.large { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 16px; }
+.learn-icon.large svg { width: 28px; height: 28px; }
+.learn .card { padding: 28px 24px; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+.learn .card:hover { transform: translateY(-4px); }
+
+/* Steps */
+.learn-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 760px) { .learn-steps { grid-template-columns: 1fr; } }
+.learn .step { padding: 28px 24px; background: linear-gradient(180deg, var(--surface-hi), var(--surface)); border: 1px solid var(--border); border-radius: var(--radius); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+.learn .step:hover { transform: translateY(-4px); }
+.learn .step .num { width: 40px; height: 40px; border-radius: 50%; background: var(--brand-gradient); display: grid; place-items: center; font-weight: 800; color: #fff; margin-bottom: 14px; box-shadow: 0 8px 20px rgba(214, 84, 120, 0.35); }
+.learn .step h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.learn .step p { color: var(--text-2); font-size: 0.94rem; margin: 0; line-height: 1.6; }
+
+/* Safety */
+.learn-safety { background: linear-gradient(180deg, rgba(214, 84, 120, 0.08), rgba(255, 164, 84, 0.045) 55%, rgba(255, 106, 0, 0.035)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.learn-safe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 760px) { .learn-safe-grid { grid-template-columns: 1fr; } }
+.learn .safe-item { display: flex; gap: 14px; padding: 22px; background: linear-gradient(180deg, var(--surface-hi), var(--surface)); border: 1px solid var(--border); border-radius: var(--radius); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+.learn .safe-item:hover { transform: translateY(-4px); }
+.learn .safe-item h3 { font-size: 1rem; margin: 0 0 5px; }
+.learn .safe-item p { color: var(--text-2); font-size: 0.92rem; margin: 0; line-height: 1.6; }
+
+/* Downloads */
+.learn-dl-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1120px; margin: 0 auto; }
+@media (max-width: 1020px) { .learn-dl-cards { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 760px) { .learn-dl-cards { grid-template-columns: 1fr; } }
+.learn .dl-card { padding: 32px 24px; text-align: center; background: linear-gradient(180deg, var(--surface-hi), var(--surface)); border: 1px solid var(--border); border-radius: var(--radius); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+.learn .dl-card:hover { transform: translateY(-4px); }
+.learn .dl-card h3 { margin: 0 0 6px; }
+.learn .dl-card p { color: var(--text-2); font-size: 0.9rem; margin: 0 0 20px; line-height: 1.6; }
+.learn .dl-card .btn { display: flex; width: 100%; max-width: 360px; margin: 0 auto; justify-content: center; }
+.learn .dl-card .btn.soon { background: var(--glass-fill); border: 1px solid var(--glass-border); color: var(--text-2); box-shadow: none; cursor: default; }
+.learn .dl-card .btn.soon:hover { transform: none; }
+.learn .dl-fact { margin-top: 14px; font-size: 0.82rem; color: var(--text-2); }
+
+/* Footer */
+.learn-footer { border-top: 1px solid var(--border); padding: 38px 0 46px; color: var(--text-2); font-size: 0.9rem; }
+.learn-foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center; }
+.learn-age { display: inline-block; border: 1.5px solid #ff5c5c; color: #ff8080; border-radius: 7px; padding: 1px 7px; font-weight: 800; font-size: 0.8rem; margin-right: 8px; }
+
+/* Reveal on scroll — never invisible: failsafe animation + noscript */
+.learn-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; animation: learn-reveal-failsafe 0.6s ease 1.8s forwards; }
+.learn-reveal.on { opacity: 1; transform: none; }
+@keyframes learn-reveal-failsafe { to { opacity: 1; transform: none; } }
