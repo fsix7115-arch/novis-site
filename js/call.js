@@ -1967,51 +1967,156 @@ els.speakerToggle.addEventListener('change', () => {
 });
 
 // ===================================================================
-// Floating chat (desktop): drag by header, resize by corner grip,
-// geometry persisted — the SAME panel, the slot stays empty.
+// Chat layout v3 (desktop): docked RIGHT by default; float by drag,
+// minimise / maximise, edge snap, and the whole layout state saved
+// (novis_chat_float: {left, top, width, height, mode, minimised,
+// prevHeight}) so a reload restores it. Frames, order and the
+// right-dock default are untouched; phone layout untouched — the
+// new controls only act at desktop width (>=1024px).
 // ===================================================================
 const chatPanel = els.chatPanel;
 const grip = $('resizeGrip');
-function applyFloatGeometry(geo) {
-  chatPanel.style.left = `${geo.left}px`;
-  chatPanel.style.top = `${geo.top}px`;
-  chatPanel.style.width = `${geo.width}px`;
-  chatPanel.style.height = `${geo.height}px`;
+const CHAT_MIN_BAR = 48; // minimised bar height (header only)
+const DESKTOP_MIN_WIDTH = 1024;
+const isDesktopWidth = () => (window.innerWidth || DESKTOP_MIN_WIDTH) >= DESKTOP_MIN_WIDTH;
+
+function readLayout() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS.chatFloat) ?? 'null');
+    if (!saved || typeof saved !== 'object') return null;
+    return {
+      left: saved.left, top: saved.top,
+      width: Math.min(640, Math.max(280, saved.width ?? 340)),
+      height: Math.min(760, Math.max(300, saved.height ?? 440)),
+      mode: saved.mode === 'docked' ? 'docked' : 'floating',
+      minimised: saved.minimised === true,
+      prevHeight: saved.prevHeight ?? saved.height ?? 440,
+    };
+  } catch { return null; }
 }
-function floatChat() {
-  const saved = JSON.parse(localStorage.getItem(LS.chatFloat) ?? 'null');
-  const rect = chatPanel.getBoundingClientRect();
-  const geo = saved ?? {
-    left: Math.max(8, window.innerWidth - rect.width - 16),
-    top: Math.max(8, rect.top), width: 340, height: 440,
-  };
-  geo.width = Math.min(640, Math.max(280, geo.width));
-  geo.height = Math.min(760, Math.max(300, geo.height));
-  chatPanel.classList.add('floating');
-  applyFloatGeometry(geo);
-  grip.classList.remove('hidden');
-  $('btnChatFloat').classList.add('hidden');
-  $('btnChatDock').classList.remove('hidden');
-}
-function dockChat() {
-  chatPanel.classList.remove('floating');
-  chatPanel.style.removeProperty('left');
-  chatPanel.style.removeProperty('top');
-  chatPanel.style.removeProperty('width');
-  chatPanel.style.removeProperty('height');
-  grip.classList.add('hidden');
-  $('btnChatFloat').classList.remove('hidden');
-  $('btnChatDock').classList.add('hidden');
-}
-function persistFloat() {
+function currentLayout() {
+  const prev = readLayout();
+  const floating = chatPanel.classList.contains('floating');
+  const minimised = chatPanel.classList.contains('minimised');
+  if (!floating) {
+    // Docked: the panel's on-screen rect is the dock slot, not the
+    // floating geometry — keep the last floating geometry so a later
+    // Float restores where the user had it.
+    return {
+      left: prev?.left ?? 0, top: prev?.top ?? 0,
+      width: prev?.width ?? 340, height: prev?.height ?? 440,
+      mode: 'docked', minimised,
+      prevHeight: prev?.prevHeight ?? prev?.height ?? 440,
+    };
+  }
   const r = chatPanel.getBoundingClientRect();
-  localStorage.setItem(LS.chatFloat, JSON.stringify({
+  return {
     left: Math.round(r.left), top: Math.round(r.top),
     width: Math.round(r.width), height: Math.round(r.height),
-  }));
+    mode: 'floating', minimised,
+    // While minimised the bar is 48px tall — the real height to
+    // restore on maximise is the saved one, not the bar.
+    prevHeight: minimised ? (prev?.prevHeight ?? Math.round(r.height)) : Math.round(r.height),
+  };
+}
+function persistLayout() {
+  try { localStorage.setItem(LS.chatFloat, JSON.stringify(currentLayout())); } catch { /* cosmetic preference only */ }
+}
+function syncChatButtons() {
+  const floating = chatPanel.classList.contains('floating');
+  const minimised = chatPanel.classList.contains('minimised');
+  $('btnChatFloat').classList.toggle('hidden', floating);
+  $('btnChatDock').classList.toggle('hidden', !floating);
+  $('btnChatMin').classList.toggle('hidden', minimised);
+  $('btnChatMax').classList.toggle('hidden', !minimised);
+  grip.classList.toggle('hidden', !floating || minimised);
+}
+function applyLayout(state) {
+  const geo = state ?? { mode: 'docked', minimised: false, width: 340, height: 440 };
+  const floating = geo.mode === 'floating' && isDesktopWidth();
+  chatPanel.classList.toggle('floating', floating);
+  chatPanel.classList.toggle('minimised', geo.minimised === true);
+  if (floating) {
+    const left = geo.left ?? Math.max(8, (window.innerWidth || 1920) - (geo.width ?? 340) - 16);
+    chatPanel.style.left = `${left}px`;
+    chatPanel.style.top = `${Math.max(0, geo.top ?? 8)}px`;
+    chatPanel.style.width = `${geo.width ?? 340}px`;
+    chatPanel.style.height = `${geo.minimised ? CHAT_MIN_BAR : (geo.height ?? 440)}px`;
+  } else {
+    chatPanel.style.removeProperty('left');
+    chatPanel.style.removeProperty('top');
+    chatPanel.style.removeProperty('width');
+    chatPanel.style.removeProperty('height');
+  }
+  syncChatButtons();
+}
+function floatChat() {
+  if (!isDesktopWidth()) return;
+  const saved = readLayout();
+  const rect = chatPanel.getBoundingClientRect();
+  applyLayout({
+    mode: 'floating',
+    minimised: saved?.minimised === true,
+    left: saved?.left ?? Math.max(8, (window.innerWidth || 1920) - rect.width - 16),
+    top: saved?.top ?? Math.max(8, rect.top),
+    width: saved?.width ?? 340,
+    height: saved?.height ?? 440,
+    prevHeight: saved?.prevHeight ?? saved?.height ?? 440,
+  });
+  persistLayout();
+}
+function dockChat() {
+  const saved = readLayout();
+  applyLayout({
+    mode: 'docked',
+    minimised: saved?.minimised === true,
+    left: saved?.left, top: saved?.top,
+    width: saved?.width ?? 340, height: saved?.height ?? 440,
+    prevHeight: saved?.prevHeight ?? saved?.height ?? 440,
+  });
+  persistLayout();
+}
+function minimiseChat() {
+  if (!isDesktopWidth()) return;
+  const state = currentLayout();
+  state.minimised = true;
+  applyLayout(state);
+  persistLayout();
+}
+function maximiseChat() {
+  if (!isDesktopWidth()) return;
+  const state = currentLayout();
+  state.minimised = false;
+  state.height = state.prevHeight || state.height;
+  applyLayout(state);
+  persistLayout();
+}
+async function resetLayout() {
+  try { localStorage.removeItem(LS.chatFloat); } catch { /* ignore */ }
+  applyLayout({ mode: 'docked', minimised: false, width: 340, height: 440 });
+  persistLayout();
+  if (document.fullscreenElement && document.exitFullscreen) {
+    try { await document.exitFullscreen(); } catch { /* ignore */ }
+  }
+}
+function syncFullscreenLabel() {
+  $('btnFullscreen').textContent = document.fullscreenElement ? 'Exit fullscreen' : '⛶ Fullscreen';
+}
+async function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch { /* gesture refused by the browser — stay as-is */ }
+  syncFullscreenLabel();
 }
 $('btnChatFloat').addEventListener('click', floatChat);
 $('btnChatDock').addEventListener('click', dockChat);
+$('btnChatMin').addEventListener('click', minimiseChat);
+$('btnChatMax').addEventListener('click', maximiseChat);
+$('btnResetLayout').addEventListener('click', resetLayout);
+$('btnFullscreen').addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', syncFullscreenLabel);
+if (!document.documentElement?.requestFullscreen) $('btnFullscreen').classList.add('hidden');
 $('btnChatHide').addEventListener('click', () => {
   chatPanel.classList.add('chat-hidden');
   $('btnChatShow').classList.remove('hidden');
@@ -2020,6 +2125,9 @@ $('btnChatShow').addEventListener('click', () => {
   chatPanel.classList.remove('chat-hidden');
   $('btnChatShow').classList.add('hidden');
 });
+// Restore the saved layout on entry (desktop only); a first visit
+// stays docked RIGHT at full height — the pakka default.
+(() => { const saved = readLayout(); if (saved) applyLayout(saved); })();
 
 $('chatHead').addEventListener('pointerdown', (e) => {
   if (!chatPanel.classList.contains('floating') || e.target.closest('button')) return;
@@ -2040,9 +2148,10 @@ $('chatHead').addEventListener('pointerdown', (e) => {
     if (Math.abs(window.innerWidth - (left + r.width)) < 18) left = window.innerWidth - r.width;
     if (left < 18) left = 0;
     if (top < 18) top = 0;
+    if (window.innerHeight - (top + r.height) < 18) top = window.innerHeight - r.height;
     chatPanel.style.left = `${left}px`;
     chatPanel.style.top = `${top}px`;
-    persistFloat();
+    persistLayout();
   };
   window.addEventListener('pointermove', move);
   window.addEventListener('pointerup', up);
@@ -2060,7 +2169,7 @@ grip.addEventListener('pointerdown', (e) => {
   const up = () => {
     window.removeEventListener('pointermove', move);
     window.removeEventListener('pointerup', up);
-    persistFloat();
+    persistLayout();
   };
   window.addEventListener('pointermove', move);
   window.addEventListener('pointerup', up);

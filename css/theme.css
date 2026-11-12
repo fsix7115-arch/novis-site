@@ -223,7 +223,7 @@ a { color: var(--glow-amber); }
 /* ---------- Call page ---------- */
 .call-root { height: 100dvh; display: flex; flex-direction: column; }
 .call-head {
-  display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px; flex-wrap: wrap;
   border-bottom: 1px solid rgba(99, 54, 78, 0.5);
 }
 .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warning); flex: none; }
@@ -284,6 +284,9 @@ button.badge { cursor: pointer; font: inherit; }
   position: fixed; z-index: 90; border: 1px solid var(--glass-border); border-radius: 16px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); overflow: hidden;
 }
+/* v3 — minimised chat collapses to its header bar only. */
+.chat-panel.minimised .chat-log, .chat-panel.minimised .typing, .chat-panel.minimised .chat-input { display: none; }
+.call-layout .chat-panel.minimised { align-self: flex-start; }
 .chat-head {
   display: flex; align-items: center; gap: 8px; padding: 11px 14px;
   border-bottom: 1px solid rgba(99, 54, 78, 0.6); cursor: default; user-select: none;
@@ -342,6 +345,11 @@ button.badge { cursor: pointer; font: inherit; }
 }
 @media (min-width: 1024px) {
   #btnChatShow { display: none !important; }
+}
+/* v3 — the new header / chat controls are desktop-only; the phone
+   call layout (stranger > chat > self > toolbar) stays untouched. */
+@media (max-width: 1023px) {
+  .desktop-only, #btnChatMin, #btnChatMax { display: none !important; }
 }
 
 /* Paused / banner overlays */

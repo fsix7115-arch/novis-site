@@ -28,6 +28,10 @@
       <input type="checkbox" id="speakerToggle"> Speaker on top
     </label>
     <span id="duration" class="muted" style="font-size:14px;"></span>
+    <button class="icon-btn desktop-only" id="btnFullscreen" title="Fullscreen">⛶ Fullscreen</button>
+    <button class="icon-btn desktop-only" id="btnResetLayout" title="Reset the chat layout to the default docked position">Reset layout</button>
+    <a class="icon-btn desktop-only" href="settings.html" style="text-decoration:none;">Settings</a>
+    <a class="icon-btn desktop-only" href="profile.html" style="text-decoration:none;">Profile</a>
   </header>
 
   <div class="call-layout" id="callLayout">
@@ -124,6 +128,8 @@
       <div class="chat-head" id="chatHead">
         <strong>Chat</strong>
         <span class="spacer"></span>
+        <button class="icon-btn" id="btnChatMin" title="Minimise chat">–</button>
+        <button class="icon-btn hidden" id="btnChatMax" title="Maximise chat">⤢</button>
         <button class="icon-btn" id="btnChatFloat">Float</button>
         <button class="icon-btn hidden" id="btnChatDock">Dock</button>
         <button class="icon-btn phone-only" id="btnChatHide">Hide</button>
@@ -148,6 +154,6 @@
 
 <script src="js/config.js"></script>
 <script src="js/ripple.js"></script>
-<script type="module" src="js/call.js?v=20261112"></script>
+<script type="module" src="js/call.js?v=20261112b"></script>
 </body>
 </html>
