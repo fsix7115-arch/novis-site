@@ -21,6 +21,7 @@ const $ = (id) => document.getElementById(id);
 const els = {
   dot: $('statusDot'), status: $('statusText'), duration: $('duration'),
   remoteVideo: $('remoteVideo'), localVideo: $('localVideo'),
+  remoteFrame: $('remoteFrame'), searchDots: $('searchDots'),
   remotePh: $('remotePlaceholder'), phTitle: $('remoteStateTitle'),
   phText: $('remoteStateText'), prepareCount: $('prepareCount'),
   peerName: $('peerName'), selfName: $('selfName'),
@@ -138,11 +139,12 @@ function setStatus(text, on = false) {
   els.dot.classList.toggle('on', on);
 }
 
-function showPlaceholder(title, text, count = '') {
+function showPlaceholder(title, text, count = '', showDots = false) {
   els.remotePh.classList.remove('hidden');
   els.phTitle.textContent = title;
   els.phText.textContent = text;
   els.prepareCount.textContent = count;
+  els.searchDots.classList.toggle('hidden', !showDots);
 }
 
 function rpc(name, params) {
@@ -760,6 +762,7 @@ async function pauseCall() {
 // ===================================================================
 function setPhase(next) {
   phase = next;
+  els.remoteFrame.classList.toggle('searching', next === 'searching');
   els.pauseBanner.classList.toggle('hidden', next !== 'paused');
   els.chatPanel.style.display = next === 'paused' ? 'none' : '';
   els.btnPause.disabled = next === 'preparing' || next === 'paused' || next === 'failed';
@@ -773,7 +776,7 @@ function setPhase(next) {
       break;
     case 'searching':
       setStatus('Searching…');
-      showPlaceholder('Searching for someone…', 'Hang tight — a stranger will appear here.');
+      showPlaceholder('Searching for someone…', 'Hang tight — a stranger will appear here.', '', true);
       break;
     case 'connecting':
       setStatus('Connecting…');
@@ -798,6 +801,7 @@ function fail(message) {
   stopSearch();
   stopOffersPoll();
   phase = 'failed';
+  els.remoteFrame.classList.remove('searching');
   els.failText.textContent = message;
   els.failBanner.classList.remove('hidden');
   // The error must be visible in the main frame too — on a phone the

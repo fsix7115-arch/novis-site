@@ -245,6 +245,24 @@ a { color: var(--glow-amber); }
   background: radial-gradient(120% 120% at 50% 0%, var(--bg-top), var(--bg-deep));
 }
 .frame .placeholder .logo-round { animation: pulseGlow 2.2s ease-in-out infinite; }
+
+/* Searching dots — 3 golden dots blink in sequence while a stranger
+   is being found; the stranger frame gets a soft warm shimmer.
+   Reduced-motion users see the dots sitting still (the site's global
+   prefers-reduced-motion rule flattens all animations). */
+.search-dots { display: flex; gap: 10px; justify-content: center; align-items: center; min-height: 14px; }
+.search-dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--glow-amber); animation: searchDotBlink 1.2s ease-in-out infinite; }
+.search-dots span:nth-child(2) { animation-delay: .2s; }
+.search-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes searchDotBlink {
+  0%, 100% { opacity: .25; transform: scale(.8); box-shadow: 0 0 4px rgba(255, 178, 94, .3); }
+  50% { opacity: 1; transform: scale(1.15); box-shadow: 0 0 16px rgba(255, 178, 94, .9); }
+}
+.frame.searching { animation: frameShimmer 3.2s ease-in-out infinite; }
+@keyframes frameShimmer {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(255, 240, 220, .19), 0 10px 30px rgba(0, 0, 0, .35); }
+  50% { box-shadow: inset 0 0 0 1px rgba(255, 178, 94, .55), 0 10px 34px rgba(255, 140, 60, .28); }
+}
 .name-chip {
   position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 7px;
   background: rgba(31, 13, 24, 0.72); border: 1px solid var(--glass-border); color: var(--text);
