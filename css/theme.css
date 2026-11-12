@@ -306,16 +306,25 @@ button.badge { cursor: pointer; font: inherit; }
 .chat-panel.minimised .chat-log, .chat-panel.minimised .typing, .chat-panel.minimised .chat-input { display: none; }
 .call-layout .chat-panel.minimised { align-self: flex-start; }
 /* Desktop: the whole call group (frames + chat) is centred on the
-   screen, with equal empty space on both sides. The stage takes a
-   fixed 700px bite (frames keep their height-driven ~676px width),
-   the chat sits 12px from the frames, and the row centres itself.
+   screen, with equal empty space on both sides. The stage is exactly
+   as wide as one frame (~676px), so the group is a clean rectangle:
+   frames flush right in the stage, chat 12px from the frames.
+   Chat is portrait 16:9 — its smaller side (width) is 9/16 of its
+   height. Docked JS sets no inline size, so the ratio rules;
+   floating keeps its saved inline size, minimised keeps 340px.
    The old 21px right-boundary gap is gone — centring supersedes it. */
 @media (min-width: 1024px) {
   .call-layout { justify-content: center; }
-  .stage { flex: 0 1 700px; }
+  .stage { flex: 0 1 676px; padding: 0; }
+  .frame-slot { justify-content: flex-end; }
+  .group-stack { padding-right: 0; }
+  .group-tile { margin-left: auto; margin-right: 0; }
   .call-layout .chat-panel:not(.floating) {
     margin-left: 12px; margin-right: 0;
     border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  }
+  .call-layout .chat-panel:not(.floating):not(.minimised) {
+    width: auto; aspect-ratio: 9 / 16;
   }
 }
 .chat-head {
