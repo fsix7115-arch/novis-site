@@ -305,6 +305,15 @@ button.badge { cursor: pointer; font: inherit; }
 /* v3 — minimised chat collapses to its header bar only. */
 .chat-panel.minimised .chat-log, .chat-panel.minimised .typing, .chat-panel.minimised .chat-input { display: none; }
 .call-layout .chat-panel.minimised { align-self: flex-start; }
+/* Desktop docked chat is detached, not flush: 12px from the frames on
+   its left, 21px from the screen boundary on its right. Floating chat
+   keeps its own geometry, so the margins apply only when docked. */
+@media (min-width: 1024px) {
+  .call-layout .chat-panel:not(.floating) {
+    margin-left: 12px; margin-right: 21px;
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  }
+}
 .chat-head {
   display: flex; align-items: center; gap: 8px; padding: 11px 14px;
   border-bottom: 1px solid rgba(99, 54, 78, 0.6); cursor: default; user-select: none;
